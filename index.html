@@ -464,6 +464,118 @@
         </div>
     </section>
 
+    <!-- Solar Calculator Section -->
+        <div class="bg-slate-900 rounded-3xl p-8 lg:p-12 border border-slate-800 shadow-2xl">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Calculate Your Solar Savings</h2>
+            <p class="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Adjust the slider to match your current monthly electricity bill and see how much you could save with MYK Solar.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Input Side -->
+                <div>
+                    <div class="mb-8">
+                        <label class="block text-slate-300 font-medium mb-4">Monthly Electricity Bill</label>
+                        <div class="flex items-baseline gap-2 mb-6">
+                            <span class="text-5xl font-bold text-orange-400">₹<span id="billValue">4,500</span></span>
+                            <span class="text-slate-500">/ month</span>
+                        </div>
+                        <input type="range" id="billInput" min="1000" max="25000" step="500" value="4500" class="w-full mb-4">
+                        <div class="flex justify-between text-slate-500 text-sm font-medium">
+                            <span>₹1,000</span>
+                            <span>₹25,000+</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-circle-info text-blue-400 mt-1"></i>
+                            <p class="text-sm text-slate-400">Estimates include potential Government subsidies (Surya Ghar) and are based on average sunlight hours.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Side -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Result Card 1 -->
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-solar-panel text-orange-400"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium">Recommended System</p>
+                        <p class="text-3xl font-bold text-white mt-1"><span id="systemSize">3</span> kW</p>
+                    </div>
+
+                    <!-- Result Card 2 -->
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-piggy-bank text-green-400"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium">Est. Annual Savings</p>
+                        <p class="text-3xl font-bold text-green-400 mt-1">₹<span id="annualSavings">54,000</span></p>
+                    </div>
+
+                    <!-- Result Card 3 (Full Width) -->
+                    <div class="bg-gradient-to-br from-slate-800 to-slate-800 p-6 rounded-2xl border border-slate-700 sm:col-span-2 relative overflow-hidden group">
+                        <!-- Decorative bg effect -->
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                        
+                        <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <p class="text-slate-400 text-sm font-medium">Approx. Net Cost (After Subsidy)</p>
+                                <p class="text-3xl font-bold text-orange-400 mt-1">₹<span id="projectCost">1,65,000</span>*</p>
+                            </div>
+                            <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg shadow-orange-500/20">
+                                <a href="https://wa.me/919176095657">Get Exact Quote</a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const billInput = document.getElementById('billInput');
+        const billValue = document.getElementById('billValue');
+        const systemSize = document.getElementById('systemSize');
+        const annualSavings = document.getElementById('annualSavings');
+        const projectCost = document.getElementById('projectCost');
+
+        function updateCalculator() {
+            const bill = parseInt(billInput.value);
+            
+            // Format Bill Value
+            billValue.innerText = bill.toLocaleString('en-IN');
+            
+            // LOGIC:
+            // 1. Estimate Units: Bill / Avg Cost per Unit (Approx ₹7.5 for domestic tiered)
+            const estimatedUnits = bill / 7.5;
+            
+            // 2. Estimate KW: Units / 120 (approx 4 units per kW per day * 30 days)
+            let kw = estimatedUnits / 120;
+            // Round to nearest 0.5, minimum 1kW
+            kw = Math.max(1, Math.round(kw * 2) / 2);
+            
+            // 3. Estimate Savings: KW * 1400 units/year * ₹7.5
+            const yearlyGen = kw * 1400; 
+            const savings = yearlyGen * 7.5;
+            
+            // 4. Estimate Cost: Approx ₹55,000 per kW (After subsidy estimate)
+            // Note: This is a rough heuristic for a lead magnet
+            const cost = kw * 55000;
+
+            // Update DOM
+            systemSize.innerText = kw;
+            annualSavings.innerText = Math.round(savings).toLocaleString('en-IN');
+            projectCost.innerText = Math.round(cost).toLocaleString('en-IN');
+        }
+
+        billInput.addEventListener('input', updateCalculator);
+        
+        // Initialize
+        updateCalculator();
+    </script>
+
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             
@@ -697,117 +809,7 @@
             </div>
         </div>
     </section>
-    <!-- Solar Calculator Section -->
-        <div class="bg-slate-900 rounded-3xl p-8 lg:p-12 border border-slate-800 shadow-2xl">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Calculate Your Solar Savings</h2>
-            <p class="text-slate-400 text-center mb-12 max-w-2xl mx-auto">Adjust the slider to match your current monthly electricity bill and see how much you could save with MYK Solar.</p>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <!-- Input Side -->
-                <div>
-                    <div class="mb-8">
-                        <label class="block text-slate-300 font-medium mb-4">Monthly Electricity Bill</label>
-                        <div class="flex items-baseline gap-2 mb-6">
-                            <span class="text-5xl font-bold text-orange-400">₹<span id="billValue">4,500</span></span>
-                            <span class="text-slate-500">/ month</span>
-                        </div>
-                        <input type="range" id="billInput" min="1000" max="25000" step="500" value="4500" class="w-full mb-4">
-                        <div class="flex justify-between text-slate-500 text-sm font-medium">
-                            <span>₹1,000</span>
-                            <span>₹25,000+</span>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <div class="flex items-start gap-3">
-                            <i class="fa-solid fa-circle-info text-blue-400 mt-1"></i>
-                            <p class="text-sm text-slate-400">Estimates include potential Government subsidies (Surya Ghar) and are based on average sunlight hours.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Side -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- Result Card 1 -->
-                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                        <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center mb-4">
-                            <i class="fa-solid fa-solar-panel text-orange-400"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium">Recommended System</p>
-                        <p class="text-3xl font-bold text-white mt-1"><span id="systemSize">3</span> kW</p>
-                    </div>
-
-                    <!-- Result Card 2 -->
-                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
-                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mb-4">
-                            <i class="fa-solid fa-piggy-bank text-green-400"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium">Est. Annual Savings</p>
-                        <p class="text-3xl font-bold text-green-400 mt-1">₹<span id="annualSavings">54,000</span></p>
-                    </div>
-
-                    <!-- Result Card 3 (Full Width) -->
-                    <div class="bg-gradient-to-br from-slate-800 to-slate-800 p-6 rounded-2xl border border-slate-700 sm:col-span-2 relative overflow-hidden group">
-                        <!-- Decorative bg effect -->
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                        
-                        <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <div>
-                                <p class="text-slate-400 text-sm font-medium">Approx. Net Cost (After Subsidy)</p>
-                                <p class="text-3xl font-bold text-orange-400 mt-1">₹<span id="projectCost">1,65,000</span>*</p>
-                            </div>
-                            <button class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg shadow-orange-500/20">
-                                <a href="https://wa.me/919176095657">Get Exact Quote</a>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const billInput = document.getElementById('billInput');
-        const billValue = document.getElementById('billValue');
-        const systemSize = document.getElementById('systemSize');
-        const annualSavings = document.getElementById('annualSavings');
-        const projectCost = document.getElementById('projectCost');
-
-        function updateCalculator() {
-            const bill = parseInt(billInput.value);
-            
-            // Format Bill Value
-            billValue.innerText = bill.toLocaleString('en-IN');
-            
-            // LOGIC:
-            // 1. Estimate Units: Bill / Avg Cost per Unit (Approx ₹7.5 for domestic tiered)
-            const estimatedUnits = bill / 7.5;
-            
-            // 2. Estimate KW: Units / 120 (approx 4 units per kW per day * 30 days)
-            let kw = estimatedUnits / 120;
-            // Round to nearest 0.5, minimum 1kW
-            kw = Math.max(1, Math.round(kw * 2) / 2);
-            
-            // 3. Estimate Savings: KW * 1400 units/year * ₹7.5
-            const yearlyGen = kw * 1400; 
-            const savings = yearlyGen * 7.5;
-            
-            // 4. Estimate Cost: Approx ₹55,000 per kW (After subsidy estimate)
-            // Note: This is a rough heuristic for a lead magnet
-            const cost = kw * 55000;
-
-            // Update DOM
-            systemSize.innerText = kw;
-            annualSavings.innerText = Math.round(savings).toLocaleString('en-IN');
-            projectCost.innerText = Math.round(cost).toLocaleString('en-IN');
-        }
-
-        billInput.addEventListener('input', updateCalculator);
-        
-        // Initialize
-        updateCalculator();
-    </script>
-
+    
     <footer class="bg-dark-900 border-t border-white/5 pt-16 pb-8">
         <div class="container mx-auto px-6">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -855,10 +857,10 @@
                     <h5 class="font-bold mb-4 text-white">Reach Us</h5>
                     <div class="space-y-3 text-sm text-gray-400">
                          <p class="flex items-start gap-3">
-                            <!--<i class="fa-solid fa-location-dot mt-1 text-brand-green shrink-0"></i>
+                            <i class="fa-solid fa-location-dot mt-1 text-brand-green shrink-0"></i>
                             <span>
                                 Shop-1, 1st Floor, 2A, Mudichur Rd,<br>
-                                Vasudeva Nagar, Shanthi Nagar,<br>
+                                
                                 Old Perungalathur, Chennai,<br>
                                 Tamil Nadu 600063
                             </span>-->
@@ -966,5 +968,6 @@
     </script>
 </body>
 </html>
+
 
 
